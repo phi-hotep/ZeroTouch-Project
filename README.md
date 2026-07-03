@@ -1,5 +1,19 @@
 # ZeroTouch — Identity Lifecycle Engine
 
+[![CI](https://github.com/huguesbomokin/zerotouch/actions/workflows/ci.yml/badge.svg)](https://github.com/huguesbomokin/zerotouch/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/demo-zerotouch.huguesbomokin.ca-0F6E56.svg)](https://zerotouch.huguesbomokin.ca)
+
+![ZeroTouch thumbnail](docs/zerotouch-thumbnail.png)
+
+**Live demo:** [zerotouch.huguesbomokin.ca](https://zerotouch.huguesbomokin.ca)
+
+In any company, when someone joins, changes departments, or leaves, IT has to
+create their account, set their access, and shut everything down cleanly on
+exit. Done by hand, that process is slow and error-prone, and a missed
+offboarding step is a real security risk. ZeroTouch automates all three flows
+end to end, live against a real Microsoft Entra ID tenant.
+
 Automated **Joiner / Mover / Leaver** (JML) identity lifecycle management on
 Microsoft Entra ID, driven by a single Flutter web form and a serverless
 PowerShell Azure Function.
@@ -179,6 +193,25 @@ managed identity, Easy Auth instead of a function key) are in
 - Secrets never live in the repo. Locally they're in an encrypted SecretStore
   vault; in Azure they're App Settings (env vars). `config.json` and
   `local.settings.json` are gitignored.
-- A browser-embedded function key is not a true secret. For production, switch
-  to Entra ID authentication (Easy Auth) with OIDC sign-in, or Key Vault +
-  managed identity for the client secret. See `docs/DEPLOYMENT.md`.
+- A browser-embedded function key is not a true secret. It is compiled into
+  the shipped `main.dart.js` via `--dart-define`, which means it is visible to
+  anyone who inspects the JavaScript. That is an acceptable, deliberate
+  trade-off for a portfolio demo against a personal test tenant, not a
+  production pattern. For production, switch to Entra ID authentication (Easy
+  Auth) with OIDC sign-in, or Key Vault + managed identity for the client
+  secret. See `docs/DEPLOYMENT.md`.
+- **Deployed is not served.** After redeploying the Flutter web build with
+  `wrangler pages deploy`, the custom domain can keep serving stale cached
+  JS/HTML until the Cloudflare cache is purged (Caching → Configuration →
+  Purge Everything) or the site is checked in an incognito window. This is now
+  a standing step in the deploy checklist.
+- This project runs against a personal test tenant
+  (`phihotepoutlook.onmicrosoft.com`) with no real organizational data. The
+  tenant ID and app registration client ID are identifiers, not credentials,
+  and are not sensitive on their own.
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE). Use it, fork it, learn from it.
