@@ -1,0 +1,18 @@
+{
+  "_comment": "Copy to local.settings.json (gitignored) and fill in real values. Only read by 'func start' locally — in Azure the same four Zt_ keys are set via 'az functionapp config appsettings set'.",
+
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "powershell",
+
+    "Zt_TenantId": "<your Entra tenant ID GUID>",
+    "Zt_ClientId": "<your app registration client ID GUID>",
+    "Zt_ClientSecret": "<your app registration client secret VALUE>",
+    "Zt_SendGridKey": "<your SendGrid API key, or leave blank to SIMULATE email locally>"
+  },
+  "Host": {
+    "CORS": "*",
+    "_corsNote": "Wildcard is fine for local dev only. In Azure use 'az functionapp cors add' with your exact Flutter origin instead of '*'."
+  }
+}

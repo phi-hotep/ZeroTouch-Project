@@ -1,0 +1,25 @@
+name: zerotouch_intake
+description: >-
+  ZeroTouch Identity Lifecycle Engine — Flutter web intake form. A single form
+  covering all three JML actions (Joiner / Mover / Leaver), posting to the
+  ZeroTouch Azure Function.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  http: ^1.2.1
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

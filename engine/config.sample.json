@@ -1,0 +1,49 @@
+{
+  "_comment": "Copy to config.json (gitignored) and fill in. Group IDs are Entra object IDs (GUIDs) from each group's Overview page. The values below are pre-filled from the Phase 1 setup — verify them against your tenant before use.",
+
+  "upnDomain": "phihotepoutlook.onmicrosoft.com",
+  "usageLocation": "CA",
+  "senderEmail": "onboarding@yourverifieddomain.com",
+
+  "licenseSkuPartNumber": "POWERAPPS_DEV",
+  "_licenseNote": "Use a SkuPartNumber that exists in YOUR tenant (Get-MgSubscribedSku). POWERAPPS_DEV = the free Developer Plan you activated. If it hasn't propagated yet or isn't found, the engine SIMULATES this stage (no error).",
+
+  "defaultGroupIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "_defaultGroupNote": "Replace the placeholder GUID with a real 'all staff' group object id, or leave it — the engine skips the all-zeros placeholder automatically.",
+
+  "departmentGroupMap": {
+    "Engineering": ["75d52952-4823-4cbd-beb0-bc3390139003"],
+    "Sales":       ["3d813e83-23a9-4b52-981e-f764f949721d"],
+    "Finance":     ["874391f3-d589-4416-a353-64ebb8e9a838"]
+  },
+
+  "offboarding": {
+    "resetPassword": true,
+    "removeAllLicenses": true,
+    "removeFromAllGroups": true,
+    "groupExclusions": [],
+    "reportTo": "it-team@yourverifieddomain.com",
+    "retentionDays": 30
+  },
+
+  "lifecycle": {
+    "_comment": "Only used by the OPTIONAL Watch-Lifecycle.ps1 CSV trigger. The Azure Function trigger does not read this. ONE intake form with an 'Action' first column; use Forms section branching so each action only asks for its own fields.",
+    "form": {
+      "csvUrl": "https://docs.google.com/spreadsheets/d/e/LIFECYCLE_PUBLISH_ID/pub?output=csv",
+      "columnMap": {
+        "timestamp":     "Timestamp",
+        "action":        "Action",
+        "firstName":     "First name",
+        "lastName":      "Last name",
+        "department":    "Department",
+        "jobTitle":      "Job title",
+        "personalEmail": "Personal email",
+        "identity":      "Employee work email",
+        "newDepartment": "New department",
+        "lastDay":       "Last working day"
+      }
+    }
+  }
+}

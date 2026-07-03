@@ -1,0 +1,42 @@
+name: ZeroTouch CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  flutter:
+    name: Flutter — analyze & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter-intake
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+  powershell:
+    name: PowerShell — PSScriptAnalyzer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+      - name: Analyze engine + function
+        shell: pwsh
+        run: |
+          $issues = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error,Warning `
+            -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions
+          $issues | Format-Table -AutoSize
+          if ($issues.Where({ $_.Severity -eq 'Error' })) {
+            Write-Error "PSScriptAnalyzer found errors."
+            exit 1
+          }

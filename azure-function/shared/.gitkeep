@@ -1,0 +1,8 @@
+# This folder is populated at deploy time — it is intentionally empty in the repo.
+#
+# Before deploying (or running 'func start' locally), copy the engine here:
+#
+#   Copy-Item ../engine/*.psm1 ./
+#   Copy-Item ../engine/config.json ./     # your filled-in config, NOT the sample
+#
+# The scripts/Copy-Engine.ps1 helper does this for you.

@@ -1,0 +1,39 @@
+# ── Secrets & config (NEVER commit) ──────────────────────────────────────────
+**/config.json
+**/local.settings.json
+*.secret
+.env
+
+# Populated at deploy time from engine/ — not source of truth
+azure-function/shared/*.psm1
+azure-function/shared/config.json
+
+# ── PowerShell runtime artifacts ─────────────────────────────────────────────
+**/logs/
+**/tombstones/
+**/state/
+**/processed-lifecycle.json
+bin/
+obj/
+
+# ── Azure Functions local ────────────────────────────────────────────────────
+__blobstorage__/
+__queuestorage__/
+__azurite_db*__.json
+.python_packages/
+
+# ── Flutter ──────────────────────────────────────────────────────────────────
+flutter-intake/.dart_tool/
+flutter-intake/.flutter-plugins
+flutter-intake/.flutter-plugins-dependencies
+flutter-intake/build/
+flutter-intake/.packages
+flutter-intake/pubspec.lock
+flutter-intake/.metadata
+
+# ── Editors / OS ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
