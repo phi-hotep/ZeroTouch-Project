@@ -31,9 +31,15 @@ flutter-intake/.packages
 flutter-intake/pubspec.lock
 flutter-intake/.metadata
 
+# ── Wrangler local cache (contains account id/name — not source of truth) ────
+.wrangler/
+
 # ── Editors / OS ─────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
 *.swp
+
+# ---CLAUDE
+CLAUDE.md

@@ -1,6 +1,6 @@
 # ZeroTouch — Identity Lifecycle Engine
 
-[![CI](https://github.com/huguesbomokin/zerotouch/actions/workflows/ci.yml/badge.svg)](https://github.com/huguesbomokin/zerotouch/actions/workflows/ci.yml)
+[![CI](https://github.com/phi-hotep/ZeroTouch-Project/actions/workflows/ci.yml/badge.svg)](https://github.com/phi-hotep/ZeroTouch-Project/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/demo-zerotouch.huguesbomokin.ca-0F6E56.svg)](https://zerotouch.huguesbomokin.ca)
 
