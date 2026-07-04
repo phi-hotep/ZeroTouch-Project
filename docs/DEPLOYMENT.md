@@ -198,6 +198,42 @@ Deploy `build/web` to Cloudflare Pages, Firebase Hosting, Azure Static Web Apps,
 or GitHub Pages. **After hosting, re-run the CORS command with your public URL**,
 or the browser will block the calls.
 
+### Redeploy checklist (Cloudflare Pages)
+
+`FUNCTION_URL` / `FUNCTION_KEY` are compiled into `main.dart.js` at build time.
+There is **no CI/CD build+deploy for the web app** — it is fully manual, so every
+redeploy must repeat the `--dart-define` flags or the shipped JS ends up with an
+empty Function URL and the form fails at submit time with
+`Bad state: FUNCTION_URL is not set`. The steps, in order:
+
+1. Rebuild **with both flags** (the step most easily forgotten):
+
+   ```powershell
+   cd flutter-intake
+   flutter build web --release `
+     --dart-define=FUNCTION_URL=https://func-zerotouch.azurewebsites.net/api/LifecycleHttp `
+     --dart-define=FUNCTION_KEY=<function-key>
+   ```
+
+2. Verify the URL is actually baked in before deploying (returns a match if OK):
+
+   ```powershell
+   Select-String -Path build/web/main.dart.js -Pattern "azurewebsites.net" -SimpleMatch
+   ```
+
+3. Deploy to the **same production project** the custom domain points at:
+
+   ```powershell
+   wrangler pages deploy build\web --project-name=zerotouch
+   ```
+
+4. **Purge the Cloudflare cache** (Caching → Configuration → Purge Everything).
+5. Verify in an **incognito window** (or a second browser) — a stale tab loaded
+   before the fix keeps running the old JS from memory. If it still fails, confirm
+   the deployed bytes are correct with
+   `curl -s https://<your-domain>/main.dart.js | Select-String azurewebsites.net`
+   and check DevTools → Application → Service Workers is empty for the origin.
+
 ---
 
 ## Troubleshooting
@@ -212,6 +248,7 @@ or the browser will block the calls.
 | `Get-ZtSecret: secret not found` | App Setting names must be `Zt_TenantId` etc. (underscores). |
 | `Get-MgUserMemberOf` denied (Leaver) | Add `Directory.Read.All` to the app and re-consent. |
 | Engine not loading in Function | Did you run `Copy-Engine.ps1` before publishing? `shared/` must contain the 4 modules + config.json. |
+| `Bad state: FUNCTION_URL is not set` in the web app | Web build shipped without the `--dart-define` flags (or a stale cache is being served). Follow the Phase 7 redeploy checklist. |
 
 ---
 

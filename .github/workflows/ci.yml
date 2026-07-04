@@ -2,9 +2,10 @@ name: ZeroTouch CI
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
+  workflow_dispatch:   # adds a "Run workflow" button for manual redeploys
 
 jobs:
   flutter:
@@ -40,3 +41,29 @@ jobs:
             Write-Error "PSScriptAnalyzer found errors."
             exit 1
           }
+
+  deploy-web:
+    name: Deploy web → Cloudflare Pages
+    needs: flutter                              # only ship if the web tests pass
+    if: github.event_name != 'pull_request'     # deploy on push-to-master + manual, never on PRs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Build web (dart-define flags baked in from secrets)
+        working-directory: flutter-intake
+        run: |
+          flutter pub get
+          flutter build web --release \
+            --dart-define=FUNCTION_URL=${{ secrets.FUNCTION_URL }} \
+            --dart-define=FUNCTION_KEY=${{ secrets.FUNCTION_KEY }}
+      - name: Verify Function URL is baked in (guard against a dropped flag)
+        run: grep -q "azurewebsites.net" flutter-intake/build/web/main.dart.js
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy flutter-intake/build/web --project-name=zerotouch --branch=master
