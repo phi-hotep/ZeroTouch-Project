@@ -34,8 +34,13 @@ jobs:
       - name: Analyze engine + function
         shell: pwsh
         run: |
+          # Excluded rules are intentional, documented design choices, not defects:
+          #   PSAvoidUsingWriteHost                          engine logs to the host (colored console, captured by App Insights)
+          #   PSUseShouldProcessForStateChangingFunctions    ShouldProcess is implemented where it matters; the router forwards -WhatIf/-Confirm explicitly
+          #   PSAvoidUsingConvertToSecureStringWithPlainText Get-ZtSecret must turn a plaintext env-var / Azure App Setting into a SecureString for Graph
+          #   PSAvoidUsingUsernameAndPasswordParams          Send-ZtWelcomeEmail emails a temp password by design (portfolio demo; see README security notes)
           $issues = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error,Warning `
-            -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions
+            -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions,PSAvoidUsingConvertToSecureStringWithPlainText,PSAvoidUsingUsernameAndPasswordParams
           $issues | Format-Table -AutoSize
           if ($issues.Where({ $_.Severity -eq 'Error' })) {
             Write-Error "PSScriptAnalyzer found errors."
